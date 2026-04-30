@@ -23,4 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-\n# Agents and Planning\nAGENTS.md\nPLAN.md\nCLAUDE.md\nto-do.md\n.claude/\n.agents/\n
+
+# Agents and Planning
+AGENTS.md
+PLAN.md
+CLAUDE.md
+to-do.md
+.claude/
+.agents/
