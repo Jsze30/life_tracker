@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "draw-16x16-frog",
+  "prompt": "Draw a 16x16 pixel art frog and save it as frog.svg",
+  "assertions": [
+    {"text": "An SVG file named frog.svg exists in the outputs directory", "name": "svg_file_exists"},
+    {"text": "The SVG contains a shape-rendering='crispEdges' attribute (pixel-perfect rendering)", "name": "crispedges_attribute"},
+    {"text": "The SVG contains green-family colors appropriate for a frog (e.g. #3a7d44, #228b22, #90ee90, or similar)", "name": "green_colors_present"},
+    {"text": "The SVG has viewBox or width/height set to render at a reasonable size (>100px)", "name": "reasonable_display_size"},
+    {"text": "The pixel grid is exactly 16x16 (the coordinate system spans 0-15 in both axes)", "name": "correct_canvas_size"}
+  ]
+}

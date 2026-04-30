@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "draw-16x16-sword",
+  "prompt": "Draw a pixel art sword icon (16x16). The sword should be diagonal, pointing top-right, with a silver blade, gold crossguard, and brown handle. Save as sword.svg",
+  "assertions": [
+    {"text": "An SVG file named sword.svg exists in the outputs directory", "name": "svg_file_exists"},
+    {"text": "The SVG contains silver/grey colors for the blade (#aaaaaa, #cccccc, #c0c0c0, #888888, or similar)", "name": "silver_blade_colors"},
+    {"text": "The SVG contains gold/yellow colors for the crossguard (#f4d03f, #ffd700, #daa520, or similar)", "name": "gold_crossguard_colors"},
+    {"text": "The pixel grid is exactly 16x16", "name": "correct_canvas_size"},
+    {"text": "The SVG has shape-rendering='crispEdges'", "name": "crispedges_attribute"}
+  ]
+}

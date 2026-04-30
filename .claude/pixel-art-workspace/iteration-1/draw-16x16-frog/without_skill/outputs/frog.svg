@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 16 16">
+  <rect width="16" height="16" fill="white"/>
+  <!-- Eyes -->
+  <circle cx="4" cy="4" r="1.5" fill="#228B22"/>
+  <circle cx="4" cy="4" r="0.7" fill="black"/>
+  <circle cx="11" cy="4" r="1.5" fill="#228B22"/>
+  <circle cx="11" cy="4" r="0.7" fill="black"/>
+  <!-- Body -->
+  <ellipse cx="8" cy="9" rx="6" ry="4" fill="#32CD32"/>
+  <!-- Belly -->
+  <ellipse cx="8" cy="10" rx="3.5" ry="2.5" fill="#90EE90"/>
+  <!-- Front legs -->
+  <rect x="1" y="10" width="2" height="3" rx="1" fill="#228B22"/>
+  <rect x="13" y="10" width="2" height="3" rx="1" fill="#228B22"/>
+</svg>

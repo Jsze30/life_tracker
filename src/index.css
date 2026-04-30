@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #F7F7F5;
+  --color-forest: #1A3C2B;
+  --color-grid: #3A3A38;
+  --color-coral: #FF8C69;
+  --color-mint: #9EFFBF;
+  --color-gold: #F4D35E;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'General Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  /* --font-quote: 'Playfair Display', Georgia, serif; */
+}
+
+:root {
+  color-scheme: light;
+  --app-surface: #ffffff;
+  --app-accent-bg: #1A3C2B;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #0F1411;
+  --color-forest: #82B892;
+  --color-grid: #B4BDB2;
+  --color-coral: #DD886E;
+  --color-mint: #86C79C;
+  --color-gold: #D7BE5B;
+  --app-surface: #171F1A;
+  --app-accent-bg: #1F5137;
+  --app-inverse-text: #E0E6DE;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-paper);
+  color: var(--color-grid);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 150ms linear, color 150ms linear;
+}
+
+:root[data-theme="dark"] .bg-white {
+  background-color: var(--app-surface) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/50,
+:root[data-theme="dark"] .focus\:bg-white:focus {
+  background-color: color-mix(in srgb, var(--app-surface) 82%, transparent) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/30 {
+  background-color: color-mix(in srgb, var(--app-surface) 58%, transparent) !important;
+}
+
+:root[data-theme="dark"] .bg-paper\/95 {
+  background-color: color-mix(in srgb, var(--color-paper) 95%, transparent) !important;
+}
+
+:root[data-theme="dark"] .bg-forest {
+  background-color: var(--app-accent-bg) !important;
+}
+
+:root[data-theme="dark"] .hover\:bg-forest:hover,
+:root[data-theme="dark"] .hover\:bg-forest\/90:hover {
+  background-color: #276944 !important;
+}
+
+:root[data-theme="dark"] .text-white {
+  color: var(--app-inverse-text) !important;
+}
+
+:root[data-theme="dark"] .text-white\/95 {
+  color: rgb(224 230 222 / 0.88) !important;
+}
+
+:root[data-theme="dark"] .text-white\/60 {
+  color: rgb(224 230 222 / 0.54) !important;
+}
+
+:root[data-theme="dark"] .text-white\/50 {
+  color: rgb(224 230 222 / 0.46) !important;
+}
+
+.theme-toggle {
+  background-color: transparent;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.theme-toggle:hover {
+  background-color: color-mix(in srgb, var(--color-grid) 8%, transparent);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+  background-color: color-mix(in srgb, var(--color-grid) 12%, transparent);
+  transform: translateY(0) scale(0.92);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-forest) 75%, transparent);
+  outline-offset: 3px;
+}
+
+.theme-toggle-icon {
+  animation: themeIconPop 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 180ms ease;
+}
+
+.theme-toggle:hover .theme-toggle-icon {
+  transform: rotate(18deg) scale(1.06);
+}
+
+@keyframes themeIconPop {
+  0% { transform: rotate(-35deg) scale(0.75); opacity: 0.55; }
+  70% { transform: rotate(8deg) scale(1.12); opacity: 1; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+/* Quote animations */
+@keyframes spinSlot {
+  0%   { transform: rotate(0deg); }
+  18%  { transform: rotate(540deg); }
+  42%  { transform: rotate(900deg); }
+  68%  { transform: rotate(1170deg); }
+  86%  { transform: rotate(1350deg); }
+  100% { transform: rotate(1440deg); }
+}
+
+@keyframes quoteExit {
+  from { opacity: 1; transform: translateY(0px); }
+  to   { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes mintRipple {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+  55%  { opacity: 0.2; }
+  100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+}
+
+.mint-ripple {
+  animation: mintRipple 0.9s ease-out forwards;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.spin-slot {
+  animation: spinSlot 2.5s linear forwards;
+}
+
+.quote-exit {
+  animation: quoteExit 0.3s ease-in forwards;
+}
+
+.typing-cursor::after {
+  content: '|';
+  margin-left: 1px;
+  animation: cursorBlink 0.6s step-start infinite;
+  opacity: 1;
+}
+
+/* Custom checkbox */
+input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-forest);
+  border-radius: 0px;
+  background: var(--app-surface);
+  cursor: pointer;
+  transition: background-color 150ms linear, border-color 150ms linear;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--app-accent-bg);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 7l3 3 5-5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 14px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Streak pulse animation */
+@keyframes streak-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.animate-streak-pulse {
+  animation: streak-pulse 2s ease-in-out infinite;
+}
+
+/* Streak bounce */
+@keyframes streak-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.animate-streak-bounce {
+  animation: streak-bounce 200ms ease-out;
+}
+
+/* Toast popup animation */
+@keyframes toast-slide-up {
+  0% { transform: translateY(100%); opacity: 0; }
+  10% { transform: translateY(0); opacity: 1; }
+  90% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.animate-toast {
+  animation: toast-slide-up 4s ease-in-out forwards;
+}
+
+/* Impact Checkbox Animations */
+@keyframes crash-down {
+  0% { transform: translate(50%, -200%) scale(2.5) rotate(15deg); opacity: 0; }
+  60% { transform: translate(0, 0) scale(0.9) rotate(0); opacity: 1; }
+  80% { transform: translate(0, -10%) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes shockwave {
+  0% { box-shadow: 0 0 0 0 rgba(26, 60, 43, 0.6); transform: scale(0.9); }
+  50% { box-shadow: 0 0 0 8px rgba(26, 60, 43, 0); transform: scale(1.1); }
+  100% { box-shadow: 0 0 0 0 rgba(26, 60, 43, 0); transform: scale(1); }
+}
+
+.animate-crash {
+  animation: crash-down 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-shockwave {
+  animation: shockwave 0.5s ease-out forwards;
+}
