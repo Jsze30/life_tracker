@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "draw-32x32-mushroom",
+  "prompt": "Make a 32x32 pixel art mushroom — red cap with white dots, Super Mario style. Save as mushroom.svg",
+  "assertions": [
+    {"text": "An SVG file named mushroom.svg exists in the outputs directory", "name": "svg_file_exists"},
+    {"text": "The SVG contains red colors for the cap (e.g. #cc0000, #ff0000, #e00000, or similar)", "name": "red_cap_colors"},
+    {"text": "The SVG contains white or near-white colors for dots (#ffffff, #f0f0f0, or similar)", "name": "white_dot_colors"},
+    {"text": "The pixel grid is exactly 32x32 (coordinates span 0-31 in both axes)", "name": "correct_canvas_size"},
+    {"text": "The SVG contains shape-rendering='crispEdges' for pixel-perfect rendering", "name": "crispedges_attribute"}
+  ]
+}
