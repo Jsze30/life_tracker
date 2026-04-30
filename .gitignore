@@ -23,3 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+\n# Agents and Planning\nAGENTS.md\nPLAN.md\nCLAUDE.md\nto-do.md\n.claude/\n.agents/\n
