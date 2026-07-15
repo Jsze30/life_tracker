@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { useStore } from '../store'
 import { today } from '../lib/dates'
 import confetti from 'canvas-confetti'
-import { Plus, Trash2 } from 'lucide-react'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 
 const fireConfetti = () => {
   confetti({ particleCount: 120, spread: 120, origin: { x: 0.5, y: 0.5 }, colors: ['#1A3C2B', '#9EFFBF', '#F4D35E', '#FF8C69', '#ffffff'] })
@@ -174,6 +174,187 @@ function PlatformSection({ platform, label }) {
   )
 }
 
+function ScriptSection() {
+  const contentScripts = useStore(s => s.contentScripts)
+  const addContentScript = useStore(s => s.addContentScript)
+  const updateContentScript = useStore(s => s.updateContentScript)
+  const deleteContentScript = useStore(s => s.deleteContentScript)
+  const [title, setTitle] = useState('')
+  const [script, setScript] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [expandedScripts, setExpandedScripts] = useState({})
+  const textareaRef = useRef(null)
+
+  useEffect(() => {
+    if (!showForm || !textareaRef.current) return
+    textareaRef.current.style.height = 'auto'
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+  }, [script, showForm])
+
+  const resetForm = () => {
+    setTitle('')
+    setScript('')
+    setEditingId(null)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    if (!title.trim() || !script.trim()) return
+
+    if (editingId) {
+      updateContentScript(editingId, title, script)
+    } else {
+      addContentScript(title, script)
+    }
+    resetForm()
+    setShowForm(false)
+  }
+
+  const handleEdit = (contentScript) => {
+    setTitle(contentScript.title)
+    setScript(contentScript.script)
+    setEditingId(contentScript.id)
+    setShowForm(true)
+  }
+
+  const visibleScripts = contentScripts.filter((contentScript) => contentScript.id !== editingId)
+
+  return (
+    <section className="bg-white border border-grid/20 mt-8 mb-8">
+      {!showForm && (
+        <button
+          type="button"
+          onClick={() => {
+            resetForm()
+            setShowForm(true)
+          }}
+          className="w-full px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-grid/40 hover:text-forest hover:bg-grid/5 transition-colors flex items-center gap-2"
+        >
+          <Plus size={12} /> Add script
+        </button>
+      )}
+
+      {showForm && <form onSubmit={handleSubmit} className="p-5">
+        <div className="flex flex-col gap-4">
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.1em] text-forest font-bold">
+            {editingId ? 'Edit script' : 'Add script'}
+          </h2>
+          <label className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-grid/60">Title</span>
+            <input
+              type="text"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Script title"
+              className="w-full font-body text-sm bg-white border border-grid/20 px-3 py-2.5 outline-none focus:border-forest text-grid placeholder-grid/30"
+            />
+          </label>
+
+          <label className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-grid/60">Script</span>
+            <textarea
+              ref={textareaRef}
+              value={script}
+              onChange={(event) => setScript(event.target.value)}
+              placeholder="Write your script here..."
+              className="w-full min-h-52 resize-none overflow-hidden font-body text-sm leading-relaxed bg-white border border-grid/20 px-3 py-3 outline-none focus:border-forest text-grid placeholder-grid/30"
+            />
+          </label>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              disabled={!title.trim() || !script.trim()}
+              className="font-mono text-[10px] uppercase tracking-[0.1em] bg-forest text-white px-4 py-2.5 hover:bg-forest/90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {editingId ? 'Save changes' : 'Save script'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                resetForm()
+                setShowForm(false)
+              }}
+              className="font-mono text-[10px] uppercase tracking-[0.1em] text-grid/50 hover:text-grid px-2 py-2.5"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>}
+
+      {visibleScripts.length > 0 && (
+        <div className="border-t border-grid/20">
+          <div className="px-5 py-3 border-b border-grid/20 bg-grid/5 font-mono text-[10px] uppercase tracking-[0.1em] text-grid/60">
+            Saved scripts
+          </div>
+          <div className="divide-y divide-grid/20">
+            {visibleScripts.map((contentScript) => (
+              (() => {
+                const isExpanded = expandedScripts[contentScript.id]
+                const needsPreview = contentScript.script.length > 220 || contentScript.script.split(/\r?\n/).length > 3
+
+                return <article key={contentScript.id} className="p-5">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <h3 className="font-display text-lg font-bold tracking-tight text-forest">{contentScript.title}</h3>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(contentScript)}
+                        className="font-mono text-[10px] uppercase tracking-[0.08em] text-grid/50 hover:text-forest flex items-center gap-1"
+                      >
+                        <Pencil size={12} /> Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (editingId === contentScript.id) {
+                            resetForm()
+                            setShowForm(false)
+                          }
+                          deleteContentScript(contentScript.id)
+                        }}
+                        className="text-grid/30 hover:text-coral transition-colors p-0.5"
+                        aria-label={`Delete ${contentScript.title}`}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  <p
+                    className="whitespace-pre-wrap font-body text-sm leading-relaxed text-grid/75"
+                    style={!isExpanded && needsPreview ? {
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    } : undefined}
+                  >
+                    {contentScript.script}
+                  </p>
+                  {needsPreview && (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedScripts((scripts) => ({
+                        ...scripts,
+                        [contentScript.id]: !isExpanded,
+                      }))}
+                      className="mt-3 font-mono text-[10px] uppercase tracking-[0.08em] text-forest hover:text-grid"
+                    >
+                      {isExpanded ? 'Show less' : 'Show more'}
+                    </button>
+                  )}
+                </article>
+              })()
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
 export default function ContentPage() {
   const completions = useStore(s => s.completions)
   const contentTasks = useStore(s => s.contentTasks)
@@ -207,6 +388,7 @@ export default function ContentPage() {
       </h1>
       <div className="h-px bg-grid/20 mb-6" />
 
+      <ScriptSection />
       <PlatformSection platform="x" label="X" />
       <PlatformSection platform="instagram" label="INSTAGRAM" />
 

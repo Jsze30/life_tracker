@@ -1,6 +1,20 @@
 import { create } from 'zustand'
 import * as db from './lib/db'
 
+const CONTENT_SCRIPTS_STORAGE_KEY = 'life-tracker-content-scripts'
+
+function readContentScripts() {
+  try {
+    return JSON.parse(localStorage.getItem(CONTENT_SCRIPTS_STORAGE_KEY)) || []
+  } catch {
+    return []
+  }
+}
+
+function saveContentScripts(scripts) {
+  localStorage.setItem(CONTENT_SCRIPTS_STORAGE_KEY, JSON.stringify(scripts))
+}
+
 export const useStore = create((set, get) => ({
   // --- State ---
   loading: false,
@@ -11,13 +25,14 @@ export const useStore = create((set, get) => ({
   completions: {},
   contentItems: [],
   contentTasks: [],
+  contentScripts: readContentScripts(),
 
   // --- Init ---
   initStore: async () => {
     set({ loading: true })
     try {
       const data = await db.fetchAll()
-      set({ ...data, loading: false })
+      set({ ...data, contentScripts: readContentScripts(), loading: false })
     } catch (err) {
       console.error('Failed to load data:', err)
       set({ loading: false })
@@ -137,6 +152,45 @@ export const useStore = create((set, get) => ({
       return { contentTasks: state.contentTasks.filter((t) => t.id !== id), completions: newCompletions }
     })
     db.deleteContentTask(id)
+  },
+
+  // --- Content Script Actions ---
+  addContentScript: (title, script) => {
+    const contentScript = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      script: script.trim(),
+      createdAt: new Date().toISOString(),
+    }
+    set((state) => {
+      const contentScripts = [contentScript, ...state.contentScripts]
+      saveContentScripts(contentScripts)
+      return { contentScripts }
+    })
+  },
+
+  updateContentScript: (id, title, script) => {
+    set((state) => {
+      const existingScript = state.contentScripts.find((contentScript) => contentScript.id === id)
+      if (!existingScript) return state
+      const updatedScript = {
+        ...existingScript,
+        title: title.trim(),
+        script: script.trim(),
+        updatedAt: new Date().toISOString(),
+      }
+      const contentScripts = [updatedScript, ...state.contentScripts.filter((contentScript) => contentScript.id !== id)]
+      saveContentScripts(contentScripts)
+      return { contentScripts }
+    })
+  },
+
+  deleteContentScript: (id) => {
+    set((state) => {
+      const contentScripts = state.contentScripts.filter((contentScript) => contentScript.id !== id)
+      saveContentScripts(contentScripts)
+      return { contentScripts }
+    })
   },
 
   // --- Completion Actions ---
